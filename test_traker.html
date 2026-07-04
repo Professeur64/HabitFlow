@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Habit Tracker Premium — Petites Habitudes. Résultats Extraordinaires.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================
+   RESET & BASE
+============================================ */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+body{font-family:'Inter',sans-serif;background:#0F172A;color:#fff;overflow-x:hidden;line-height:1.6}
+img{max-width:100%;display:block}
+a{text-decoration:none;color:inherit}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+
+/* ============================================
+   WRAPPER (Elementor compatible)
+============================================ */
+.ht-wrap{position:relative;background:#0F172A;color:#fff;font-family:'Inter',sans-serif;overflow:hidden}
+.ht-wrap *{box-sizing:border-box}
+.ht-wrap h1,.ht-wrap h2,.ht-wrap h3,.ht-wrap h4{font-family:'Space Grotesk',sans-serif;font-weight:600;letter-spacing:-0.02em;line-height:1.15}
+
+/* ============================================
+   AMBIENT GLOW
+============================================ */
+.ht-wrap::before{content:"";position:fixed;top:-20%;left:-10%;width:60%;height:60%;background:radial-gradient(circle,rgba(99,102,241,0.18),transparent 60%);pointer-events:none;z-index:0;filter:blur(60px)}
+.ht-wrap::after{content:"";position:fixed;bottom:-20%;right:-10%;width:60%;height:60%;background:radial-gradient(circle,rgba(139,92,246,0.15),transparent 60%);pointer-events:none;z-index:0;filter:blur(60px)}
+
+/* Mouse glow */
+.ht-mouse-glow{position:fixed;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,0.12),transparent 60%);pointer-events:none;transform:translate(-50%,-50%);z-index:1;transition:opacity .3s;opacity:0}
+.ht-wrap:hover .ht-mouse-glow{opacity:1}
+
+/* ============================================
+   CONTAINER
+============================================ */
+.ht-container{max-width:1240px;margin:0 auto;padding:0 24px;position:relative;z-index:2}
+
+/* ============================================
+   HEADER
+============================================ */
+.ht-header{position:sticky;top:0;z-index:100;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:rgba(15,23,42,0.75);border-bottom:1px solid rgba(255,255,255,0.06);transition:all .3s}
+.ht-header-inner{display:flex;align-items:center;justify-content:space-between;padding:18px 0}
+.ht-logo{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px}
+.ht-logo-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#6366F1,#8B5CF6);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(99,102,241,0.4)}
+.ht-logo-icon svg{width:20px;height:20px}
+.ht-nav{display:flex;align-items:center;gap:36px}
+.ht-nav a{font-size:14px;font-weight:500;color:rgba(255,255,255,0.75);transition:color .2s;position:relative}
+.ht-nav a:hover{color:#fff}
+.ht-nav a::after{content:"";position:absolute;bottom:-6px;left:0;width:0;height:2px;background:linear-gradient(90deg,#6366F1,#8B5CF6);transition:width .3s}
+.ht-nav a:hover::after{width:100%}
+.ht-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:12px;font-weight:600;font-size:14px;transition:all .3s;cursor:pointer;white-space:nowrap}
+.ht-btn-primary{background:linear-gradient(135deg,#6366F1,#8B5CF6);color:#fff;box-shadow:0 10px 30px rgba(99,102,241,0.35)}
+.ht-btn-primary:hover{transform:translateY(-2px);box-shadow:0 15px 40px rgba(99,102,241,0.5)}
+.ht-btn-ghost{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff}
+.ht-btn-ghost:hover{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2)}
+.ht-btn-lg{padding:18px 36px;font-size:16px;border-radius:14px}
+.ht-mobile-toggle{display:none;width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,0.06);align-items:center;justify-content:center}
+.ht-mobile-toggle span{display:block;width:18px;height:2px;background:#fff;position:relative;transition:.3s}
+.ht-mobile-toggle span::before,.ht-mobile-toggle span::after{content:"";position:absolute;left:0;width:18px;height:2px;background:#fff;transition:.3s}
+.ht-mobile-toggle span::before{top:-6px}
+.ht-mobile-toggle span::after{top:6px}
+
+/* ============================================
+   HERO
+============================================ */
+.ht-hero{padding:80px 0 100px;position:relative;text-align:center}
+.ht-hero-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:100px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.3);font-size:13px;font-weight:500;color:#a5b4fc;margin-bottom:28px}
+.ht-hero-badge .dot{width:6px;height:6px;border-radius:50%;background:#22C55E;box-shadow:0 0 10px #22C55E;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.ht-hero h1{font-size:clamp(42px,7vw,84px);font-weight:700;margin-bottom:24px;letter-spacing:-0.04em}
+.ht-hero h1 .grad{background:linear-gradient(135deg,#6366F1 0%,#8B5CF6 50%,#22C55E 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.ht-hero p{font-size:clamp(16px,1.8vw,20px);color:rgba(255,255,255,0.7);max-width:680px;margin:0 auto 36px;font-weight:400}
+.ht-hero-price{display:inline-flex;align-items:baseline;gap:10px;margin-bottom:32px;padding:10px 20px;border-radius:14px;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.25)}
+.ht-hero-price .old{font-size:16px;color:rgba(255,255,255,0.4);text-decoration:line-through}
+.ht-hero-price .new{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;color:#22C55E}
+.ht-hero-price .save{font-size:12px;padding:4px 10px;border-radius:100px;background:#22C55E;color:#0F172A;font-weight:600}
+.ht-hero-ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:48px}
+.ht-trust-badges{display:flex;gap:28px;justify-content:center;flex-wrap:wrap;margin-top:36px}
+.ht-trust-badge{display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,0.65);font-weight:500}
+.ht-trust-badge svg{width:18px;height:18px;color:#22C55E}
+
+/* Hero Mockup */
+.ht-hero-mockup{margin-top:70px;position:relative;perspective:2000px}
+.ht-macbook{max-width:980px;margin:0 auto;position:relative;transform:rotateX(6deg);transition:transform .6s}
+.ht-macbook:hover{transform:rotateX(0deg)}
+.ht-macbook-screen{background:#1E293B;border-radius:18px;padding:14px;border:1px solid rgba(255,255,255,0.08);box-shadow:0 40px 80px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.05) inset;position:relative;overflow:hidden}
+.ht-macbook-screen::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:8px;height:8px;border-radius:50%;background:#0F172A;z-index:2}
+.ht-macbook-inner{background:#0F172A;border-radius:8px;aspect-ratio:16/10;overflow:hidden;position:relative}
+.ht-macbook-base{height:14px;background:linear-gradient(180deg,#334155,#1E293B);border-radius:0 0 12px 12px;margin:0 auto;width:110%;margin-left:-5%}
+
+/* Dashboard mockup (SVG-like) */
+.ht-dash{display:grid;grid-template-columns:220px 1fr;grid-template-rows:auto 1fr;height:100%;background:#0F172A}
+.ht-dash-side{background:#1E293B;padding:20px 16px;border-right:1px solid rgba(255,255,255,0.05)}
+.ht-dash-logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;margin-bottom:24px;display:flex;align-items:center;gap:8px}
+.ht-dash-logo-ico{width:24px;height:24px;border-radius:6px;background:linear-gradient(135deg,#6366F1,#8B5CF6)}
+.ht-dash-menu{display:flex;flex-direction:column;gap:4px}
+.ht-dash-menu-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:12px;color:rgba(255,255,255,0.65);transition:.2s}
+.ht-dash-menu-item.active{background:rgba(99,102,241,0.15);color:#fff}
+.ht-dash-menu-item .mi{width:14px;height:14px;border-radius:4px;background:rgba(255,255,255,0.15)}
+.ht-dash-menu-item.active .mi{background:linear-gradient(135deg,#6366F1,#8B5CF6)}
+.ht-dash-main{padding:20px;overflow:hidden}
+.ht-dash-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.ht-dash-title{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600}
+.ht-dash-date{font-size:11px;color:rgba(255,255,255,0.5)}
+.ht-dash-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.ht-dash-stat{background:#1E293B;border-radius:10px;padding:12px;border:1px solid rgba(255,255,255,0.05)}
+.ht-dash-stat-label{font-size:9px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.ht-dash-stat-val{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700}
+.ht-dash-stat-trend{font-size:9px;color:#22C55E;margin-top:2px}
+.ht-dash-grid{display:grid;grid-template-columns:2fr 1fr;gap:10px;height:calc(100% - 150px)}
+.ht-dash-card{background:#1E293B;border-radius:10px;padding:14px;border:1px solid rgba(255,255,255,0.05)}
+.ht-dash-card-title{font-size:11px;font-weight:600;margin-bottom:10px;display:flex;justify-content:space-between}
+.ht-dash-card-title span{color:rgba(255,255,255,0.4);font-weight:400}
+/* Chart bars */
+.ht-chart{display:flex;align-items:flex-end;gap:6px;height:calc(100% - 30px);padding-top:10px}
+.ht-chart-bar{flex:1;background:linear-gradient(180deg,#6366F1,#8B5CF6);border-radius:4px 4px 0 0;min-height:10%;position:relative;transition:.3s}
+.ht-chart-bar:hover{filter:brightness(1.2)}
+/* Heatmap */
+.ht-heatmap{display:grid;grid-template-columns:repeat(12,1fr);gap:3px;margin-top:6px}
+.ht-heat-cell{aspect-ratio:1;border-radius:2px;background:rgba(99,102,241,0.1)}
+.ht-heat-cell.l1{background:rgba(99,102,241,0.25)}
+.ht-heat-cell.l2{background:rgba(99,102,241,0.45)}
+.ht-heat-cell.l3{background:rgba(99,102,241,0.7)}
+.ht-heat-cell.l4{background:#6366F1}
+/* Habits list */
+.ht-habits{display:flex;flex-direction:column;gap:6px}
+.ht-habit{display:flex;align-items:center;gap:8px;padding:7px 9px;background:rgba(255,255,255,0.03);border-radius:6px;font-size:10px}
+.ht-habit-check{width:14px;height:14px;border-radius:4px;background:#22C55E;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.ht-habit-check svg{width:9px;height:9px;color:#fff}
+.ht-habit-pending{background:rgba(255,255,255,0.08)}
+.ht-habit-name{flex:1;color:rgba(255,255,255,0.85)}
+.ht-habit-streak{font-size:9px;color:#22C55E;font-weight:600}
+
+/* iPhone */
+.ht-iphone{position:absolute;right:-30px;bottom:-40px;width:200px;z-index:3;animation:float 6s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.ht-iphone-frame{background:#0F172A;border:3px solid #334155;border-radius:32px;padding:10px;box-shadow:0 30px 60px rgba(0,0,0,0.6),0 0 0 1px rgba(255,255,255,0.05) inset;position:relative}
+.ht-iphone-frame::before{content:"";position:absolute;top:14px;left:50%;transform:translateX(-50%);width:70px;height:18px;background:#000;border-radius:10px;z-index:2}
+.ht-iphone-screen{background:#1E293B;border-radius:22px;aspect-ratio:9/19.5;overflow:hidden;padding:30px 12px 12px}
+.ht-iphone-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.ht-iphone-title{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:600}
+.ht-iphone-avatar{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#6366F1,#8B5CF6)}
+.ht-iphone-streak{background:linear-gradient(135deg,#6366F1,#8B5CF6);border-radius:12px;padding:10px;margin-bottom:10px;text-align:center}
+.ht-iphone-streak-num{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700}
+.ht-iphone-streak-lbl{font-size:8px;opacity:.8;text-transform:uppercase;letter-spacing:.5px}
+.ht-iphone-today{font-size:9px;color:rgba(255,255,255,0.5);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.ht-iphone-habits{display:flex;flex-direction:column;gap:5px}
+.ht-iphone-habit{display:flex;align-items:center;gap:6px;padding:6px 8px;background:rgba(255,255,255,0.04);border-radius:8px;font-size:9px}
+.ht-iphone-habit-ico{width:18px;height:18px;border-radius:5px;background:rgba(99,102,241,0.2);display:flex;align-items:center;justify-content:center;font-size:10px}
+.ht-iphone-habit-name{flex:1;color:rgba(255,255,255,0.85)}
+
+/* ============================================
+   SECTIONS COMMON
+============================================ */
+.ht-section{padding:100px 0;position:relative}
+.ht-section-head{text-align:center;max-width:720px;margin:0 auto 60px}
+.ht-section-eyebrow{display:inline-block;padding:6px 14px;border-radius:100px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.25);font-size:12px;font-weight:600;color:#a5b4fc;text-transform:uppercase;letter-spacing:1px;margin-bottom:18px}
+.ht-section-title{font-size:clamp(32px,5vw,54px);font-weight:700;margin-bottom:18px;letter-spacing:-0.03em}
+.ht-section-title .grad{background:linear-gradient(135deg,#6366F1,#8B5CF6);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.ht-section-sub{font-size:17px;color:rgba(255,255,255,0.65);line-height:1.7}
+
+/* ============================================
+   BEFORE / AFTER
+============================================ */
+.ht-ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:1000px;margin:0 auto}
+.ht-ba-card{padding:40px;border-radius:20px;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,0.06)}
+.ht-ba-before{background:linear-gradient(135deg,rgba(239,68,68,0.08),rgba(239,68,68,0.02));border-color:rgba(239,68,68,0.2)}
+.ht-ba-after{background:linear-gradient(135deg,rgba(34,197,94,0.08),rgba(34,197,94,0.02));border-color:rgba(34,197,94,0.25)}
+.ht-ba-label{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:100px;font-size:12px;font-weight:600;margin-bottom:24px}
+.ht-ba-before .ht-ba-label{background:rgba(239,68,68,0.15);color:#fca5a5}
+.ht-ba-after .ht-ba-label{background:rgba(34,197,94,0.15);color:#86efac}
+.ht-ba-card h3{font-size:26px;margin-bottom:24px;font-weight:600}
+.ht-ba-list{list-style:none;display:flex;flex-direction:column;gap:14px}
+.ht-ba-list li{display:flex;align-items:center;gap:12px;font-size:16px;color:rgba(255,255,255,0.85)}
+.ht-ba-list .ico{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ht-ba-before .ico{background:rgba(239,68,68,0.15);color:#fca5a5}
+.ht-ba-after .ico{background:rgba(34,197,94,0.15);color:#86efac}
+.ht-ba-list .ico svg{width:14px;height:14px}
+
+/* ============================================
+   GALLERY
+============================================ */
+.ht-gallery{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,260px);gap:16px}
+.ht-gallery-item{border-radius:18px;overflow:hidden;position:relative;border:1px solid rgba(255,255,255,0.06);background:#1E293B;transition:all .4s;cursor:pointer}
+.ht-gallery-item:hover{transform:translateY(-6px);border-color:rgba(99,102,241,0.4);box-shadow:0 20px 50px rgba(99,102,241,0.2)}
+.ht-gallery-item.large{grid-column:span 2;grid-row:span 2}
+.ht-gallery-item.tall{grid-row:span 2}
+.ht-gallery-img{width:100%;height:100%;background:linear-gradient(135deg,#1E293B,#0F172A);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.ht-gallery-img::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 30% 30%,rgba(99,102,241,0.2),transparent 50%)}
+.ht-gallery-img::after{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.08),transparent);transition:left .6s}
+.ht-gallery-item:hover .ht-gallery-img::after{left:100%}
+.ht-gallery-label{position:absolute;bottom:16px;left:16px;padding:6px 12px;border-radius:8px;background:rgba(15,23,42,0.8);backdrop-filter:blur(10px);font-size:12px;font-weight:600;border:1px solid rgba(255,255,255,0.1)}
+
+/* Gallery inner mockups */
+.ht-mini-dash{width:92%;height:92%;background:#0F172A;border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.ht-mini-row{display:flex;gap:8px}
+.ht-mini-card{flex:1;background:#1E293B;border-radius:8px;padding:10px;border:1px solid rgba(255,255,255,0.04)}
+.ht-mini-card .lbl{font-size:8px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.ht-mini-card .val{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700}
+.ht-mini-chart{flex:2;background:#1E293B;border-radius:8px;padding:10px;border:1px solid rgba(255,255,255,0.04);display:flex;align-items:flex-end;gap:4px}
+.ht-mini-chart span{flex:1;background:linear-gradient(180deg,#6366F1,#8B5CF6);border-radius:2px 2px 0 0}
+.ht-mini-heat{flex:2;background:#1E293B;border-radius:8px;padding:10px;border:1px solid rgba(255,255,255,0.04);display:grid;grid-template-columns:repeat(10,1fr);gap:2px;align-content:start}
+.ht-mini-heat span{aspect-ratio:1;border-radius:2px;background:rgba(99,102,241,0.15)}
+.ht-mini-heat span.a{background:rgba(99,102,241,0.4)}
+.ht-mini-heat span.b{background:rgba(99,102,241,0.7)}
+.ht-mini-heat span.c{background:#6366F1}
+
+/* ============================================
+   FEATURES
+============================================ */
+.ht-features{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.ht-feature{padding:28px;border-radius:18px;background:linear-gradient(135deg,rgba(30,41,59,0.6),rgba(30,41,59,0.3));border:1px solid rgba(255,255,255,0.06);transition:all .4s;position:relative;overflow:hidden}
+.ht-feature::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(99,102,241,0.5),transparent);opacity:0;transition:.4s}
+.ht-feature:hover{transform:translateY(-6px);border-color:rgba(99,102,241,0.3);background:linear-gradient(135deg,rgba(30,41,59,0.9),rgba(30,41,59,0.5))}
+.ht-feature:hover::before{opacity:1}
+.ht-feature-ico{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,rgba(99,102,241,0.2),rgba(139,92,246,0.2));border:1px solid rgba(99,102,241,0.3);display:flex;align-items:center;justify-content:center;margin-bottom:18px;color:#a5b4fc}
+.ht-feature-ico svg{width:22px;height:22px}
+.ht-feature h3{font-size:18px;margin-bottom:8px;font-weight:600}
+.ht-feature p{font-size:14px;color:rgba(255,255,255,0.6);line-height:1.6}
+
+/* ============================================
+   STATISTICS
+============================================ */
+.ht-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.ht-stat-card{padding:30px;border-radius:20px;background:linear-gradient(135deg,rgba(30,41,59,0.7),rgba(30,41,59,0.3));border:1px solid rgba(255,255,255,0.06);transition:all .4s;position:relative;overflow:hidden}
+.ht-stat-card:hover{transform:translateY(-4px);border-color:rgba(139,92,246,0.3)}
+.ht-stat-card-ico{width:44px;height:44px;border-radius:11px;background:linear-gradient(135deg,#6366F1,#8B5CF6);display:flex;align-items:center;justify-content:center;margin-bottom:18px;box-shadow:0 8px 20px rgba(99,102,241,0.3)}
+.ht-stat-card-ico svg{width:20px;height:20px;color:#fff}
+.ht-stat-card h3{font-size:20px;margin-bottom:8px;font-weight:600}
+.ht-stat-card p{font-size:14px;color:rgba(255,255,255,0.6);line-height:1.6;margin-bottom:18px}
+.ht-stat-visual{height:80px;background:rgba(15,23,42,0.5);border-radius:10px;padding:12px;border:1px solid rgba(255,255,255,0.04);display:flex;align-items:flex-end;gap:4px}
+.ht-stat-visual span{flex:1;background:linear-gradient(180deg,#22C55E,#16a34a);border-radius:2px 2px 0 0;min-height:10%}
+.ht-stat-circle{width:80px;height:80px;border-radius:50%;background:conic-gradient(#22C55E 0 75%,rgba(255,255,255,0.08) 75% 100%);display:flex;align-items:center;justify-content:center;margin:0 auto;position:relative}
+.ht-stat-circle::before{content:"";position:absolute;inset:6px;border-radius:50%;background:#1E293B}
+.ht-stat-circle span{position:relative;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px}
+
+/* ============================================
+   WHO IS IT FOR
+============================================ */
+.ht-audience{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.ht-audience-card{padding:26px;border-radius:16px;background:rgba(30,41,59,0.4);border:1px solid rgba(255,255,255,0.06);text-align:center;transition:all .4s}
+.ht-audience-card:hover{transform:translateY(-4px);background:rgba(30,41,59,0.7);border-color:rgba(99,102,241,0.3)}
+.ht-audience-emoji{font-size:36px;margin-bottom:12px;display:block}
+.ht-audience-card h4{font-size:16px;font-weight:600}
+
+/* ============================================
+   WHY GOOGLE SHEETS
+============================================ */
+.ht-gsheets{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.ht-gsheets-card{padding:28px;border-radius:18px;background:rgba(30,41,59,0.4);border:1px solid rgba(255,255,255,0.06);display:flex;gap:16px;align-items:flex-start;transition:all .4s}
+.ht-gsheets-card:hover{transform:translateY(-4px);border-color:rgba(34,197,94,0.3)}
+.ht-gsheets-ico{width:44px;height:44px;border-radius:11px;background:rgba(34,197,94,0.15);color:#22C55E;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ht-gsheets-ico svg{width:20px;height:20px}
+.ht-gsheets-card h4{font-size:16px;margin-bottom:4px;font-weight:600}
+.ht-gsheets-card p{font-size:13px;color:rgba(255,255,255,0.6)}
+
+/* ============================================
+   BONUSES
+============================================ */
+.ht-bonuses{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.ht-bonus{padding:24px;border-radius:16px;background:linear-gradient(135deg,rgba(99,102,241,0.08),rgba(139,92,246,0.04));border:1px solid rgba(99,102,241,0.2);text-align:center;transition:all .4s;position:relative}
+.ht-bonus::before{content:"BONUS";position:absolute;top:-10px;left:50%;transform:translateX(-50%);padding:3px 10px;border-radius:100px;background:linear-gradient(135deg,#6366F1,#8B5CF6);font-size:9px;font-weight:700;letter-spacing:1px}
+.ht-bonus:hover{transform:translateY(-4px) scale(1.02);border-color:rgba(99,102,241,0.5)}
+.ht-bonus-ico{font-size:32px;margin-bottom:10px;display:block}
+.ht-bonus h4{font-size:14px;font-weight:600}
+
+/* ============================================
+   REVIEWS
+============================================ */
+.ht-reviews-track{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;padding:10px 4px 30px;scrollbar-width:none}
+.ht-reviews-track::-webkit-scrollbar{display:none}
+.ht-review{min-width:360px;max-width:360px;scroll-snap-align:start;padding:30px;border-radius:20px;background:linear-gradient(135deg,rgba(30,41,59,0.7),rgba(30,41,59,0.3));border:1px solid rgba(255,255,255,0.06);transition:all .4s}
+.ht-review:hover{transform:translateY(-4px);border-color:rgba(99,102,241,0.3)}
+.ht-review-stars{display:flex;gap:3px;margin-bottom:16px;color:#FBBF24}
+.ht-review-stars svg{width:16px;height:16px;fill:currentColor}
+.ht-review-text{font-size:15px;color:rgba(255,255,255,0.85);line-height:1.7;margin-bottom:20px;font-style:italic}
+.ht-review-author{display:flex;align-items:center;gap:12px}
+.ht-review-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#6366F1,#8B5CF6);display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px}
+.ht-review-name{font-weight:600;font-size:14px}
+.ht-review-role{font-size:12px;color:rgba(255,255,255,0.5)}
+
+/* ============================================
+   PRICING
+============================================ */
+.ht-pricing-wrap{max-width:540px;margin:0 auto}
+.ht-pricing{padding:50px 40px;border-radius:28px;background:linear-gradient(135deg,rgba(99,102,241,0.12),rgba(139,92,246,0.06));border:1px solid rgba(99,102,241,0.3);position:relative;overflow:hidden;text-align:center}
+.ht-pricing::before{content:"";position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(99,102,241,0.15),transparent 40%);pointer-events:none}
+.ht-pricing-badge{display:inline-block;padding:6px 14px;border-radius:100px;background:linear-gradient(135deg,#22C55E,#16a34a);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:20px;position:relative}
+.ht-pricing h3{font-size:28px;margin-bottom:12px;position:relative}
+.ht-pricing-sub{color:rgba(255,255,255,0.65);margin-bottom:30px;position:relative}
+.ht-pricing-price{display:flex;align-items:baseline;justify-content:center;gap:10px;margin-bottom:8px;position:relative}
+.ht-pricing-price .old{font-size:22px;color:rgba(255,255,255,0.4);text-decoration:line-through}
+.ht-pricing-price .new{font-family:'Space Grotesk',sans-serif;font-size:64px;font-weight:700;background:linear-gradient(135deg,#6366F1,#8B5CF6);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.ht-pricing-price .cur{font-size:24px;font-weight:600;color:rgba(255,255,255,0.7)}
+.ht-pricing-onetime{font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:30px;position:relative}
+.ht-pricing-features{list-style:none;text-align:left;margin-bottom:32px;display:flex;flex-direction:column;gap:12px;position:relative}
+.ht-pricing-features li{display:flex;align-items:center;gap:12px;font-size:15px;color:rgba(255,255,255,0.85)}
+.ht-pricing-features .chk{width:22px;height:22px;border-radius:50%;background:rgba(34,197,94,0.15);color:#22C55E;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ht-pricing-features .chk svg{width:12px;height:12px}
+.ht-pricing-cta{width:100%;justify-content:center;position:relative;font-size:17px;padding:20px}
+.ht-pricing-guarantee{margin-top:20px;font-size:12px;color:rgba(255,255,255,0.5);position:relative}
+
+/* ============================================
+   FAQ
+============================================ */
+.ht-faq{max-width:800px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+.ht-faq-item{background:rgba(30,41,59,0.5);border:1px solid rgba(255,255,255,0.06);border-radius:14px;overflow:hidden;transition:all .3s}
+.ht-faq-item.open{border-color:rgba(99,102,241,0.3);background:rgba(30,41,59,0.8)}
+.ht-faq-q{padding:22px 24px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-weight:600;font-size:16px;gap:16px}
+.ht-faq-toggle{width:32px;height:32px;border-radius:50%;background:rgba(99,102,241,0.15);color:#a5b4fc;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .3s}
+.ht-faq-item.open .ht-faq-toggle{transform:rotate(45deg);background:linear-gradient(135deg,#6366F1,#8B5CF6);color:#fff}
+.ht-faq-a{max-height:0;overflow:hidden;transition:max-height .4s ease;padding:0 24px}
+.ht-faq-item.open .ht-faq-a{max-height:300px;padding:0 24px 22px}
+.ht-faq-a p{color:rgba(255,255,255,0.7);line-height:1.7;font-size:15px}
+
+/* ============================================
+   ORDER FORM
+============================================ */
+.ht-order-wrap{max-width:640px;margin:0 auto}
+.ht-order{padding:44px;border-radius:24px;background:linear-gradient(135deg,rgba(30,41,59,0.8),rgba(30,41,59,0.4));border:1px solid rgba(255,255,255,0.08);position:relative;overflow:hidden}
+.ht-order::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(99,102,241,0.5),transparent)}
+.ht-order-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.ht-field{display:flex;flex-direction:column;gap:8px}
+.ht-field.full{grid-column:span 2}
+.ht-field label{font-size:13px;font-weight:500;color:rgba(255,255,255,0.75)}
+.ht-field input,.ht-field select,.ht-field textarea{padding:14px 16px;border-radius:11px;background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.08);color:#fff;font-family:inherit;font-size:15px;transition:all .3s;width:100%}
+.ht-field input:focus,.ht-field select:focus,.ht-field textarea:focus{outline:none;border-color:rgba(99,102,241,0.5);background:rgba(15,23,42,0.9);box-shadow:0 0 0 3px rgba(99,102,241,0.1)}
+.ht-field textarea{resize:vertical;min-height:90px}
+.ht-order-submit{width:100%;justify-content:center;font-size:17px;padding:20px;margin-top:8px}
+.ht-order-secure{margin-top:16px;text-align:center;font-size:12px;color:rgba(255,255,255,0.5);display:flex;align-items:center;justify-content:center;gap:6px}
+.ht-order-secure svg{width:14px;height:14px}
+
+/* ============================================
+   WHATSAPP FLOAT
+============================================ */
+.ht-wa-float{position:fixed;bottom:28px;right:28px;width:60px;height:60px;border-radius:50%;background:#000;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.1);z-index:99;transition:all .3s;cursor:pointer}
+.ht-wa-float::before{content:"";position:absolute;inset:-4px;border-radius:50%;background:linear-gradient(135deg,#6366F1,#8B5CF6);z-index:-1;opacity:.6;animation:waPulse 2s infinite}
+@keyframes waPulse{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.4);opacity:0}}
+.ht-wa-float:hover{transform:scale(1.1) rotate(-8deg)}
+.ht-wa-float svg{width:28px;height:28px;color:#fff}
+
+/* ============================================
+   FOOTER
+============================================ */
+.ht-footer{padding:60px 0 30px;border-top:1px solid rgba(255,255,255,0.06);margin-top:60px;position:relative;z-index:2}
+.ht-footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px}
+.ht-footer-brand p{color:rgba(255,255,255,0.6);font-size:14px;margin-top:14px;max-width:320px;line-height:1.7}
+.ht-footer-col h5{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:18px;color:rgba(255,255,255,0.9)}
+.ht-footer-col ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+.ht-footer-col a{font-size:14px;color:rgba(255,255,255,0.6);transition:color .2s}
+.ht-footer-col a:hover{color:#fff}
+.ht-footer-bottom{padding-top:24px;border-top:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;font-size:13px;color:rgba(255,255,255,0.5)}
+
+/* ============================================
+   SCROLL REVEAL
+============================================ */
+.ht-reveal{opacity:0;transform:translateY(30px);transition:opacity .8s cubic-bezier(.2,.8,.2,1),transform .8s cubic-bezier(.2,.8,.2,1)}
+.ht-reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ============================================
+   RESPONSIVE
+============================================ */
+@media (max-width:1024px){
+  .ht-features{grid-template-columns:repeat(3,1fr)}
+  .ht-stats-grid{grid-template-columns:repeat(2,1fr)}
+  .ht-audience{grid-template-columns:repeat(3,1fr)}
+  .ht-gsheets{grid-template-columns:repeat(2,1fr)}
+  .ht-bonuses{grid-template-columns:repeat(3,1fr)}
+  .ht-gallery{grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(3,220px)}
+  .ht-gallery-item.large{grid-column:span 2;grid-row:span 1}
+  .ht-gallery-item.tall{grid-row:span 1}
+  .ht-footer-grid{grid-template-columns:1fr 1fr}
+}
+@media (max-width:768px){
+  .ht-nav{display:none;position:absolute;top:100%;left:0;right:0;background:rgba(15,23,42,0.98);backdrop-filter:blur(20px);flex-direction:column;padding:20px;gap:18px;border-bottom:1px solid rgba(255,255,255,0.06)}
+  .ht-nav.open{display:flex}
+  .ht-mobile-toggle{display:flex}
+  .ht-header .ht-btn-primary{display:none}
+  .ht-section{padding:70px 0}
+  .ht-ba-grid{grid-template-columns:1fr}
+  .ht-features{grid-template-columns:repeat(2,1fr)}
+  .ht-stats-grid{grid-template-columns:1fr}
+  .ht-audience{grid-template-columns:repeat(2,1fr)}
+  .ht-gsheets{grid-template-columns:1fr}
+  .ht-bonuses{grid-template-columns:repeat(2,1fr)}
+  .ht-gallery{grid-template-columns:1fr;grid-template-rows:auto}
+  .ht-gallery-item.large{grid-column:span 1;grid-row:span 1}
+  .ht-gallery-item{height:220px}
+  .ht-order{padding:28px 22px}
+  .ht-order-grid{grid-template-columns:1fr}
+  .ht-field.full{grid-column:span 1}
+  .ht-footer-grid{grid-template-columns:1fr;gap:30px}
+  .ht-footer-bottom{flex-direction:column;text-align:center}
+  .ht-iphone{width:140px;right:-10px;bottom:-20px}
+  .ht-hero{padding:50px 0 70px}
+  .ht-dash-side{display:none}
+  .ht-dash{grid-template-columns:1fr}
+  .ht-dash-stats{grid-template-columns:repeat(2,1fr)}
+  .ht-dash-grid{grid-template-columns:1fr;height:auto}
+  .ht-pricing{padding:36px 24px}
+  .ht-pricing-price .new{font-size:48px}
+  .ht-review{min-width:300px;max-width:300px;padding:24px}
+}
+@media (max-width:480px){
+  .ht-features{grid-template-columns:1fr}
+  .ht-audience{grid-template-columns:1fr}
+  .ht-bonuses{grid-template-columns:1fr}
+  .ht-hero-ctas{flex-direction:column;align-items:stretch}
+  .ht-hero-ctas .ht-btn{justify-content:center}
+  .ht-trust-badges{gap:14px}
+  .ht-wa-float{width:54px;height:54px;bottom:20px;right:20px}
+  .ht-wa-float svg{width:24px;height:24px}
+}
+</style>
+</head>
+<body>
+
+<div class="ht-wrap">
+<div class="ht-mouse-glow" id="htMouseGlow"></div>
+
+<!-- ============================================
+     HEADER
+============================================ -->
+<header class="ht-header">
+  <div class="ht-container">
+    <div class="ht-header-inner">
+      <a href="#" class="ht-logo">
+        <div class="ht-logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        </div>
+        HabitFlow
+      </a>
+      <nav class="ht-nav" id="htNav">
+        <a href="#features">Fonctionnalités</a>
+        <a href="#dashboard">Dashboard</a>
+        <a href="#reviews">Avis</a>
+        <a href="#pricing">Tarif</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <a href="#order" class="ht-btn ht-btn-primary">Commencer
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </a>
+      <button class="ht-mobile-toggle" id="htToggle" aria-label="Menu"><span></span></button>
+    </div>
+  </div>
+</header>
+
+<!-- ============================================
+     HERO
+============================================ -->
+<section class="ht-hero">
+  <div class="ht-container">
+    <div class="ht-hero-badge ht-reveal">
+      <span class="dot"></span>
+      Nouveau — Version 2026 disponible
+    </div>
+    <h1 class="ht-reveal">Petites Habitudes.<br><span class="grad">Résultats Extraordinaires.</span></h1>
+    <p class="ht-reveal">Organisez votre vie, construisez de meilleures habitudes et atteignez vos objectifs avec un puissant dashboard Google Sheets tout-en-un.</p>
+    
+    <div class="ht-hero-price ht-reveal">
+      <span class="old">190MAD</span>
+      <span class="new">69MAD</span>
+      <span class="save">-70%</span>
+    </div>
+
+    <div class="ht-hero-ctas ht-reveal">
+      <a href="#order" class="ht-btn ht-btn-primary ht-btn-lg">Commencer maintenant
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </a>
+      <a href="#dashboard" class="ht-btn ht-btn-ghost ht-btn-lg">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Voir le dashboard
+      </a>
+    </div>
+
+    <div class="ht-trust-badges ht-reveal">
+      <div class="ht-trust-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Google Sheets</div>
+      <div class="ht-trust-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Accès à vie</div>
+      <div class="ht-trust-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Téléchargement instantané</div>
+      <div class="ht-trust-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Statistiques automatiques</div>
+    </div>
+
+    <!-- Hero Mockup -->
+    <div class="ht-hero-mockup ht-reveal">
+     <!-- <div class="ht-macbook">
+        <div class="ht-macbook-screen">
+          <div class="ht-macbook-inner">
+            <div class="ht-dash">
+              <aside class="ht-dash-side">
+                <div class="ht-dash-logo"><div class="ht-dash-logo-ico"></div>HabitFlow</div>
+                <div class="ht-dash-menu">
+                  <div class="ht-dash-menu-item active"><div class="mi"></div>Dashboard</div>
+                  <div class="ht-dash-menu-item"><div class="mi"></div>Habitudes</div>
+                  <div class="ht-dash-menu-item"><div class="mi"></div>Objectifs</div>
+                  <div class="ht-dash-menu-item"><div class="mi"></div>Calendrier</div>
+                  <div class="ht-dash-menu-item"><div class="mi"></div>Sport</div>
+                  <div class="ht-dash-menu-item"><div class="mi"></div>Finance</div>
+                  <div class="ht-dash-menu-item"><div class="mi"></div>Sommeil</div>
+                  <div class="ht-dash-menu-item"><div class="mi"></div>Humeur</div>
+                </div>
+              </aside>
+              <main class="ht-dash-main">
+                <div class="ht-dash-top">
+                  <div class="ht-dash-title">Bonjour, Alexandre 👋</div>
+                  <div class="ht-dash-date">Mardi 30 Juin 2026</div>
+                </div>
+                <div class="ht-dash-stats">
+                  <div class="ht-dash-stat"><div class="ht-dash-stat-label">Streak</div><div class="ht-dash-stat-val">47j</div><div class="ht-dash-stat-trend">↑ Record</div></div>
+                  <div class="ht-dash-stat"><div class="ht-dash-stat-label">Aujourd'hui</div><div class="ht-dash-stat-val">8/10</div><div class="ht-dash-stat-trend">↑ 80%</div></div>
+                  <div class="ht-dash-stat"><div class="ht-dash-stat-label">Ce mois</div><div class="ht-dash-stat-val">92%</div><div class="ht-dash-stat-trend">↑ Excellent</div></div>
+                  <div class="ht-dash-stat"><div class="ht-dash-stat-label">Objectifs</div><div class="ht-dash-stat-val">5/7</div><div class="ht-dash-stat-trend">↑ En cours</div></div>
+                </div>
+                <div class="ht-dash-grid">
+                  <div class="ht-dash-card">
+                    <div class="ht-dash-card-title">Progression hebdomadaire <span>Cette semaine</span></div>
+                    <div class="ht-chart">
+                      <div class="ht-chart-bar" style="height:65%"></div>
+                      <div class="ht-chart-bar" style="height:80%"></div>
+                      <div class="ht-chart-bar" style="height:55%"></div>
+                      <div class="ht-chart-bar" style="height:90%"></div>
+                      <div class="ht-chart-bar" style="height:75%"></div>
+                      <div class="ht-chart-bar" style="height:95%"></div>
+                      <div class="ht-chart-bar" style="height:85%"></div>
+                    </div>
+                  </div>
+                  <div class="ht-dash-card">
+                    <div class="ht-dash-card-title">Habitudes du jour <span>8/10</span></div>
+                    <div class="ht-habits">
+                      <div class="ht-habit"><div class="ht-habit-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="ht-habit-name">Méditation</div><div class="ht-habit-streak">🔥 23</div></div>
+                      <div class="ht-habit"><div class="ht-habit-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="ht-habit-name">Sport</div><div class="ht-habit-streak">🔥 15</div></div>
+                      <div class="ht-habit"><div class="ht-habit-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="ht-habit-name">Lecture</div><div class="ht-habit-streak">🔥 47</div></div>
+                      <div class="ht-habit"><div class="ht-habit-check ht-habit-pending"></div><div class="ht-habit-name">Eau 2L</div><div class="ht-habit-streak" style="color:rgba(255,255,255,0.4)">—</div></div>
+                      <div class="ht-habit"><div class="ht-habit-check ht-habit-pending"></div><div class="ht-habit-name">Sommeil 8h</div><div class="ht-habit-streak" style="color:rgba(255,255,255,0.4)">—</div></div>
+                    </div>
+                  </div>
+                </div>
+              </main>
+            </div>
+          </div>
+        </div>
+        <div class="ht-macbook-base"></div>
+      </div> -->
+
+            <!-- Gif
+              <div class="ht-macbook">
+          <div class="ht-macbook-screen">
+            <div class="ht-macbook-inner">
+              <img src="tacker.gif" alt="Screen Content" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+            </div>
+          </div>
+          <div class="ht-macbook-base"></div>
+        </div> -->
+
+        <div class="ht-macbook">
+  <div class="ht-macbook-screen">
+    <div class="ht-macbook-inner">
+      <video autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: cover; display: block;">
+        <source src="tacker.mp4" type="video/mp4">
+        متصفحك لا يدعم تشغيل الفيديو.
+      </video>
+    </div>
+  </div>
+  <div class="ht-macbook-base"></div>
+</div>
+
+      <!-- iPhone -->
+      <!-- <div class="ht-iphone">
+        <div class="ht-iphone-frame">
+          <div class="ht-iphone-screen">
+            <div class="ht-iphone-header">
+              <div class="ht-iphone-title">Aujourd'hui</div>
+              <div class="ht-iphone-avatar"></div>
+            </div>
+            <div class="ht-iphone-streak">
+              <div class="ht-iphone-streak-num">47</div>
+              <div class="ht-iphone-streak-lbl">Jours de suite 🔥</div>
+            </div>
+            <div class="ht-iphone-today">Habitudes · 8/10</div>
+            <div class="ht-iphone-habits">
+              <div class="ht-iphone-habit"><div class="ht-iphone-habit-ico">🧘</div><div class="ht-iphone-habit-name">Méditation</div></div>
+              <div class="ht-iphone-habit"><div class="ht-iphone-habit-ico">💪</div><div class="ht-iphone-habit-name">Sport</div></div>
+              <div class="ht-iphone-habit"><div class="ht-iphone-habit-ico">📚</div><div class="ht-iphone-habit-name">Lecture</div></div>
+              <div class="ht-iphone-habit"><div class="ht-iphone-habit-ico">💧</div><div class="ht-iphone-habit-name">Hydratation</div></div>
+              <div class="ht-iphone-habit"><div class="ht-iphone-habit-ico">😴</div><div class="ht-iphone-habit-name">Sommeil</div></div>
+            </div>
+          </div>
+        </div>
+      </div> -->
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     BEFORE / AFTER
+============================================ -->
+<section class="ht-section" id="difference">
+  <div class="ht-container">
+    <div class="ht-section-head ht-reveal">
+      <span class="ht-section-eyebrow">La transformation</span>
+      <h2 class="ht-section-title">Imaginez <span class="grad">La Différence</span></h2>
+      <p class="ht-section-sub">En quelques semaines, votre quotidien se métamorphose. La discipline devient naturelle, les résultats deviennent visibles.</p>
+    </div>
+    <div class="ht-ba-grid">
+      <div class="ht-ba-card ht-ba-before ht-reveal">
+        <div class="ht-ba-label">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          Sans Habit Tracker
+        </div>
+        <h3>Avant</h3>
+        <ul class="ht-ba-list">
+          <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>Aucune routine établie</li>
+          <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>Habitudes oubliées chaque jour</li>
+          <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>Zéro discipline</li>
+          <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>Objectifs perdus dans le flou</li>
+          <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>Stress et procrastination</li>
+        </ul>
+      </div>
+      <div class="ht-ba-card ht-ba-after ht-reveal">
+        <div class="ht-ba-label">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Avec Habit Tracker
+        </div>
+        <h3>Après</h3>
+        <ul class="ht-ba-list">
+          <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Constance quotidienne</li>
+          <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Objectifs clairs et suivis</li>
+          <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Routine saine installée</li>
+          <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Progrès visibles chaque semaine</li>
+          <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Productivité décuplée</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     DASHBOARD PREVIEW
+============================================ -->
+<section class="ht-section" id="dashboard">
+  <div class="ht-container">
+    <div class="ht-section-head ht-reveal">
+      <span class="ht-section-eyebrow">Aperçu complet</span>
+      <h2 class="ht-section-title">Un outil <span class="grad">de pilotage taillé pour votre quotidien</span></h2>
+      <p class="ht-section-sub">Explorez chaque vue : statistiques, calendrier, habitudes, graphiques et objectifs — tout est pensé pour vous faire gagner du temps.</p>
+    </div>
+    <div class="ht-gallery">
+      <div class="ht-gallery-item large ht-reveal">
+        <div class="ht-gallery-img">
+          <div class="ht-mini-dash">
+            <div class="ht-mini-row">
+              <div class="ht-mini-card"><div class="lbl">Streak</div><div class="val">47j</div></div>
+              <div class="ht-mini-card"><div class="lbl">Aujourd'hui</div><div class="val">8/10</div></div>
+              <div class="ht-mini-card"><div class="lbl">Ce mois</div><div class="val">92%</div></div>
+            </div>
+            <div class="ht-mini-row" style="flex:1">
+              <div class="ht-mini-chart">
+                <span style="height:40%"></span><span style="height:65%"></span><span style="height:55%"></span>
+                <span style="height:80%"></span><span style="height:70%"></span><span style="height:90%"></span>
+                <span style="height:75%"></span><span style="height:95%"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ht-gallery-label">Dashboard principal</div>
+      </div>
+      <div class="ht-gallery-item ht-reveal">
+        <div class="ht-gallery-img">
+          <div class="ht-mini-dash">
+            <div class="ht-mini-card"><div class="lbl">Objectifs atteints</div><div class="val" style="color:#22C55E">5/7</div></div>
+            <div class="ht-mini-row" style="flex:1">
+              <div class="ht-mini-chart">
+                <span style="height:30%"></span><span style="height:50%"></span><span style="height:70%"></span>
+                <span style="height:60%"></span><span style="height:85%"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ht-gallery-label">Statistiques</div>
+      </div>
+      <div class="ht-gallery-item ht-reveal">
+        <div class="ht-gallery-img">
+          <div class="ht-mini-dash">
+            <div class="ht-mini-card"><div class="lbl">Calendrier</div><div class="val">Juin 2026</div></div>
+            <div class="ht-mini-heat" style="flex:1">
+              <span></span><span class="a"></span><span class="b"></span><span class="c"></span><span></span><span class="a"></span><span class="b"></span><span class="c"></span><span class="a"></span><span></span>
+              <span class="a"></span><span class="b"></span><span class="c"></span><span class="c"></span><span class="b"></span><span class="a"></span><span></span><span class="a"></span><span class="b"></span><span class="c"></span>
+              <span class="b"></span><span class="c"></span><span class="c"></span><span class="b"></span><span class="a"></span><span class="a"></span><span class="b"></span><span class="c"></span><span class="c"></span><span class="b"></span>
+              <span></span><span class="a"></span><span class="b"></span><span class="c"></span><span class="c"></span><span class="b"></span><span class="a"></span><span class="a"></span><span class="b"></span><span class="c"></span>
+            </div>
+          </div>
+        </div>
+        <div class="ht-gallery-label">Calendrier</div>
+      </div>
+      <div class="ht-gallery-item ht-reveal">
+        <div class="ht-gallery-img">
+          <div class="ht-mini-dash">
+            <div class="ht-mini-card"><div class="lbl">Habitudes</div><div class="val">12</div></div>
+            <div class="ht-mini-row" style="flex:1;flex-direction:column;gap:6px">
+              <div class="ht-mini-card" style="padding:8px;display:flex;align-items:center;gap:8px"><div style="width:14px;height:14px;border-radius:4px;background:#22C55E"></div><div style="font-size:10px;flex:1">Méditation</div><div style="font-size:9px;color:#22C55E">🔥 23</div></div>
+              <div class="ht-mini-card" style="padding:8px;display:flex;align-items:center;gap:8px"><div style="width:14px;height:14px;border-radius:4px;background:#22C55E"></div><div style="font-size:10px;flex:1">Sport</div><div style="font-size:9px;color:#22C55E">🔥 15</div></div>
+              <div class="ht-mini-card" style="padding:8px;display:flex;align-items:center;gap:8px"><div style="width:14px;height:14px;border-radius:4px;background:#22C55E"></div><div style="font-size:10px;flex:1">Lecture</div><div style="font-size:9px;color:#22C55E">🔥 47</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="ht-gallery-label">Habitudes</div>
+      </div>
+      <div class="ht-gallery-item ht-reveal">
+        <div class="ht-gallery-img">
+          <div class="ht-mini-dash">
+            <div class="ht-mini-card"><div class="lbl">Graphiques</div><div class="val">+24%</div></div>
+            <div class="ht-mini-row" style="flex:1">
+              <div class="ht-mini-chart">
+                <span style="height:20%"></span><span style="height:35%"></span><span style="height:45%"></span>
+                <span style="height:60%"></span><span style="height:55%"></span><span style="height:75%"></span>
+                <span style="height:90%"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ht-gallery-label">Graphiques</div>
+      </div>
+      <div class="ht-gallery-item ht-reveal">
+        <div class="ht-gallery-img">
+          <div class="ht-mini-dash">
+            <div class="ht-mini-card"><div class="lbl">Objectifs 2026</div><div class="val">7</div></div>
+            <div class="ht-mini-row" style="flex:1;flex-direction:column;gap:6px">
+              <div class="ht-mini-card" style="padding:8px"><div style="font-size:9px;color:rgba(255,255,255,0.5);margin-bottom:4px">Courir 500km</div><div style="height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden"><div style="width:72%;height:100%;background:linear-gradient(90deg,#6366F1,#8B5CF6)"></div></div></div>
+              <div class="ht-mini-card" style="padding:8px"><div style="font-size:9px;color:rgba(255,255,255,0.5);margin-bottom:4px">Lire 24 livres</div><div style="height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden"><div style="width:58%;height:100%;background:linear-gradient(90deg,#22C55E,#16a34a)"></div></div></div>
+              <div class="ht-mini-card" style="padding:8px"><div style="font-size:9px;color:rgba(255,255,255,0.5);margin-bottom:4px">Épargne 5000€</div><div style="height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden"><div style="width:41%;height:100%;background:linear-gradient(90deg,#FBBF24,#F59E0B)"></div></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="ht-gallery-label">Objectifs</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     FEATURES
+============================================ -->
+<section class="ht-section" id="features">
+  <div class="ht-container">
+    <div class="ht-section-head ht-reveal">
+      <span class="ht-section-eyebrow">Fonctionnalités</span>
+      <h2 class="ht-section-title">Tout ce dont vous avez <span class="grad">besoin</span></h2>
+      <p class="ht-section-sub">12 modules puissants pour suivre chaque aspect de votre vie et transformer vos ambitions en habitudes.</p>
+    </div>
+    <div class="ht-features">
+      <div class="ht-feature ht-reveal"><div class="ht-feature-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div><h3>Habitudes quotidiennes</h3><p>Suivez vos habitudes chaque jour avec un système simple et visuel.</p></div>
+      <div class="ht-feature ht-reveal"><div class="ht-feature-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><h3>Planning hebdomadaire</h3><p>Organisez votre semaine en un coup d'œil et anticipez chaque journée.</p></div>
+      <div class="ht-feature ht-reveal"><div class="ht-feature-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg></div><h3>Planning mensuel</h3><p>Visualisez vos engagements sur 30 jours et gardez le cap.</p></div>
+      <div class="ht-feature ht-reveal"><div class="ht-feature-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><h3>Suivi d'objectifs</h3><p>Définissez, suivez et célébrez chaque objectif atteint.</p></div>
+      <div class="ht-feature ht-reveal"><div class="ht-feature-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div><h3>Suivi de lecture</h3><p>Comptez vos livres, pages lues et notez vos coups de cœur.</p></div>
+      <div class="ht-feature ht-reveal"><div class="ht-feature-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5l11 11M21 21l-1-1M3 3l1 1M18 22l4-4M2 6l4-4M3 10l7-7M14 21l7-7"/></svg></div><h3>Suivi sportif</h3><p>Enregistrez vos entraînements, séries, répétitions et performances.</p></div>
+      <div class="ht-feature ht-reveal"><div class="ht-feature-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><h3>Suivi financier</h3><p>Gérez revenus, dépenses et épargne avec clarté.</p></div>
+      <div class="ht-feature ht-reveal"><div class="ht-feature-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></div><h3>Suivi hydratation</h3><p>Atteignez vos objectifs d'eau quotidienne sans effort.</p></div>
+      <div class="ht-feature ht-reveal"><div class="ht-feature-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></div><h3>Suivi du sommeil</h3><p>Analysez la qualité et la durée de vos nuits.</p></div>
+      <div class="ht-feature ht-reveal"><div class="ht-feature-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div><h3>Suivi de l'humeur</h3><p>Identifiez les patterns émotionnels de votre quotidien.</p></div>
+      <div class="ht-feature ht-reveal"><div class="ht-feature-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></div><h3>Suivi d'études</h3><p>Chronométrez vos sessions et mesurez votre progression.</p></div>
+      <div class="ht-feature ht-reveal"><div class="ht-feature-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div><h3>Habitudes personnalisées</h3><p>Créez vos propres habitudes et adaptez le tracker à votre vie.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     STATISTICS
+============================================ -->
+<section class="ht-section">
+  <div class="ht-container">
+    <div class="ht-section-head ht-reveal">
+      <span class="ht-section-eyebrow">Statistiques</span>
+      <h2 class="ht-section-title">Vos données <span class="grad">prennent vie</span></h2>
+      <p class="ht-section-sub">Des visualisations puissantes pour comprendre vos progrès et rester motivé jour après jour.</p>
+    </div>
+    <div class="ht-stats-grid">
+      <div class="ht-stat-card ht-reveal">
+        <div class="ht-stat-card-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+        <h3>Heat Map annuel</h3>
+        <p>Visualisez votre constance sur 365 jours en un coup d'œil.</p>
+        <div class="ht-stat-visual" style="display:grid;grid-template-columns:repeat(15,1fr);grid-template-rows:repeat(4,1fr);gap:2px;padding:10px">
+          <span style="background:rgba(99,102,241,0.2)"></span><span style="background:rgba(99,102,241,0.4)"></span><span style="background:rgba(99,102,241,0.7)"></span><span style="background:#6366F1"></span><span style="background:rgba(99,102,241,0.3)"></span><span style="background:rgba(99,102,241,0.5)"></span><span style="background:rgba(99,102,241,0.8)"></span><span style="background:#6366F1"></span><span style="background:rgba(99,102,241,0.4)"></span><span style="background:rgba(99,102,241,0.6)"></span><span style="background:rgba(99,102,241,0.9)"></span><span style="background:#6366F1"></span><span style="background:rgba(99,102,241,0.3)"></span><span style="background:rgba(99,102,241,0.5)"></span><span style="background:rgba(99,102,241,0.7)"></span>
+          <span style="background:rgba(99,102,241,0.5)"></span><span style="background:rgba(99,102,241,0.8)"></span><span style="background:#6366F1"></span><span style="background:rgba(99,102,241,0.6)"></span><span style="background:rgba(99,102,241,0.4)"></span><span style="background:rgba(99,102,241,0.7)"></span><span style="background:#6366F1"></span><span style="background:rgba(99,102,241,0.5)"></span><span style="background:rgba(99,102,241,0.3)"></span><span style="background:rgba(99,102,241,0.8)"></span><span style="background:#6366F1"></span><span style="background:rgba(99,102,241,0.6)"></span><span style="background:rgba(99,102,241,0.4)"></span><span style="background:rgba(99,102,241,0.7)"></span><span style="background:#6366F1"></span>
+          <span style="background:rgba(99,102,241,0.3)"></span><span style="background:rgba(99,102,241,0.6)"></span><span style="background:rgba(99,102,241,0.4)"></span><span style="background:rgba(99,102,241,0.9)"></span><span style="background:#6366F1"></span><span style="background:rgba(99,102,241,0.5)"></span><span style="background:rgba(99,102,241,0.7)"></span><span style="background:#6366F1"></span><span style="background:rgba(99,102,241,0.6)"></span><span style="background:rgba(99,102,241,0.4)"></span><span style="background:rgba(99,102,241,0.8)"></span><span style="background:#6366F1"></span><span style="background:rgba(99,102,241,0.5)"></span><span style="background:rgba(99,102,241,0.7)"></span><span style="background:rgba(99,102,241,0.4)"></span>
+          <span style="background:rgba(99,102,241,0.6)"></span><span style="background:#6366F1"></span><span style="background:rgba(99,102,241,0.8)"></span><span style="background:rgba(99,102,241,0.5)"></span><span style="background:rgba(99,102,241,0.7)"></span><span style="background:#6366F1"></span><span style="background:rgba(99,102,241,0.4)"></span><span style="background:rgba(99,102,241,0.6)"></span><span style="background:rgba(99,102,241,0.9)"></span><span style="background:#6366F1"></span><span style="background:rgba(99,102,241,0.5)"></span><span style="background:rgba(99,102,241,0.7)"></span><span style="background:#6366F1"></span><span style="background:rgba(99,102,241,0.4)"></span><span style="background:rgba(99,102,241,0.6)"></span>
+        </div>
+      </div>
+      <div class="ht-stat-card ht-reveal">
+        <div class="ht-stat-card-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <h3>Cercle de progression</h3>
+        <p>Visualisez votre taux de complétion en temps réel.</p>
+        <div style="display:flex;justify-content:center;padding:10px">
+          <div class="ht-stat-circle"><span>75%</span></div>
+        </div>
+      </div>
+      <div class="ht-stat-card ht-reveal">
+        <div class="ht-stat-card-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+        <h3>Compteur de streak</h3>
+        <p>Ne brisez jamais la chaîne. Votre streak vous motive.</p>
+        <div style="text-align:center;padding:10px">
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:48px;font-weight:700;background:linear-gradient(135deg,#F59E0B,#EF4444);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">🔥 47</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.6);margin-top:4px">JOURS CONSÉCUTIFS</div>
+        </div>
+      </div>
+      <div class="ht-stat-card ht-reveal">
+        <div class="ht-stat-card-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+        <h3>Graphiques mensuels</h3>
+        <p>Analysez vos tendances sur 30 jours glissants.</p>
+        <div class="ht-stat-visual">
+          <span style="height:30%"></span><span style="height:50%"></span><span style="height:40%"></span><span style="height:65%"></span><span style="height:55%"></span><span style="height:75%"></span><span style="height:70%"></span><span style="height:85%"></span><span style="height:80%"></span><span style="height:90%"></span>
+        </div>
+      </div>
+      <div class="ht-stat-card ht-reveal">
+        <div class="ht-stat-card-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <h3>Graphiques hebdomadaires</h3>
+        <p>Comparez semaine après semaine vos performances.</p>
+        <div class="ht-stat-visual">
+          <span style="height:45%"></span><span style="height:60%"></span><span style="height:55%"></span><span style="height:75%"></span><span style="height:80%"></span><span style="height:70%"></span><span style="height:90%"></span>
+        </div>
+      </div>
+      <div class="ht-stat-card ht-reveal">
+        <div class="ht-stat-card-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+        <h3>Rapports automatiques</h3>
+        <p>Recevez des rapports générés automatiquement chaque mois.</p>
+        <div style="padding:10px;display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;justify-content:space-between;font-size:11px;padding:6px 10px;background:rgba(255,255,255,0.04);border-radius:6px"><span style="color:rgba(255,255,255,0.6)">Taux de réussite</span><span style="color:#22C55E;font-weight:600">92%</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;padding:6px 10px;background:rgba(255,255,255,0.04);border-radius:6px"><span style="color:rgba(255,255,255,0.6)">Meilleur streak</span><span style="color:#F59E0B;font-weight:600">47j</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;padding:6px 10px;background:rgba(255,255,255,0.04);border-radius:6px"><span style="color:rgba(255,255,255,0.6)">Habitudes actives</span><span style="color:#a5b4fc;font-weight:600">12</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     WHO IS IT FOR
+============================================ -->
+<section class="ht-section">
+  <div class="ht-container">
+    <div class="ht-section-head ht-reveal">
+      <span class="ht-section-eyebrow">Pour qui ?</span>
+      <h2 class="ht-section-title">Conçu pour <span class="grad">les ambitieux</span></h2>
+      <p class="ht-section-sub">Peu importe votre profil, Habit Tracker s'adapte à votre mode de vie et à vos objectifs.</p>
+    </div>
+    <div class="ht-audience">
+      <div class="ht-audience-card ht-reveal"><span class="ht-audience-emoji">🎓</span><h4>Étudiants</h4></div>
+      <div class="ht-audience-card ht-reveal"><span class="ht-audience-emoji">🚀</span><h4>Entrepreneurs</h4></div>
+      <div class="ht-audience-card ht-reveal"><span class="ht-audience-emoji">💻</span><h4>Freelances</h4></div>
+      <div class="ht-audience-card ht-reveal"><span class="ht-audience-emoji">💼</span><h4>Salariés</h4></div>
+      <div class="ht-audience-card ht-reveal"><span class="ht-audience-emoji">🎨</span><h4>Créateurs</h4></div>
+      <div class="ht-audience-card ht-reveal"><span class="ht-audience-emoji">💪</span><h4>Sportifs</h4></div>
+      <div class="ht-audience-card ht-reveal"><span class="ht-audience-emoji">🌍</span><h4>Apprenants en langues</h4></div>
+      <div class="ht-audience-card ht-reveal"><span class="ht-audience-emoji">✨</span><h4>Et vous</h4></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     WHY GOOGLE SHEETS
+============================================ -->
+<section class="ht-section">
+  <div class="ht-container">
+    <div class="ht-section-head ht-reveal">
+      <span class="ht-section-eyebrow">Pourquoi Google Sheets</span>
+      <h2 class="ht-section-title">La liberté <span class="grad">sans compromis</span></h2>
+      <p class="ht-section-sub">Pas d'application à installer, pas d'abonnement. Juste la puissance de Google Sheets, partout avec vous.</p>
+    </div>
+    <div class="ht-gsheets">
+      <div class="ht-gsheets-card ht-reveal"><div class="ht-gsheets-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div><div><h4>Fonctionne partout</h4><p>Accédez à vos données depuis n'importe quel navigateur.</p></div></div>
+      <div class="ht-gsheets-card ht-reveal"><div class="ht-gsheets-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div><div><h4>Mobile</h4><p>Suivez vos habitudes depuis votre smartphone.</p></div></div>
+      <div class="ht-gsheets-card ht-reveal"><div class="ht-gsheets-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2" ry="2"/><line x1="8" y1="20" x2="16" y2="20"/><line x1="12" y1="16" x2="12" y2="20"/></svg></div><div><h4>Tablette & Ordinateur</h4><p>Une expérience optimale sur tous les écrans.</p></div></div>
+      <div class="ht-gsheets-card ht-reveal"><div class="ht-gsheets-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div><h4>Aucun abonnement</h4><p>Payez une fois, utilisez pour toujours.</p></div></div>
+      <div class="ht-gsheets-card ht-reveal"><div class="ht-gsheets-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg></div><div><h4>Synchronisation Cloud</h4><p>Vos données disponibles partout, tout le temps.</p></div></div>
+      <div class="ht-gsheets-card ht-reveal"><div class="ht-gsheets-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div><div><h4>Facile à personnaliser</h4><p>Modifiez couleurs, habitudes et formules en quelques clics.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     BONUSES
+============================================ -->
+<section class="ht-section">
+  <div class="ht-container">
+    <div class="ht-section-head ht-reveal">
+      <span class="ht-section-eyebrow">Bonus offerts</span>
+      <h2 class="ht-section-title">Encore plus de <span class="grad">valeur</span></h2>
+      <p class="ht-section-sub">5 bonus exclusifs inclus gratuitement avec votre achat pour maximiser votre productivité.</p>
+    </div>
+    <div class="ht-bonuses">
+      <div class="ht-bonus ht-reveal"><span class="ht-bonus-ico">🖨️</span><h4>Version imprimable</h4></div>
+      <div class="ht-bonus ht-reveal"><span class="ht-bonus-ico">🌙</span><h4>Thème sombre</h4></div>
+      <div class="ht-bonus ht-reveal"><span class="ht-bonus-ico">☀️</span><h4>Thème clair</h4></div>
+      <div class="ht-bonus ht-reveal"><span class="ht-bonus-ico">🎯</span><h4>Planificateur d'objectifs</h4></div>
+      <div class="ht-bonus ht-reveal"><span class="ht-bonus-ico">📅</span><h4>Planificateur annuel</h4></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     REVIEWS
+============================================ -->
+<section class="ht-section" id="reviews">
+  <div class="ht-container">
+    <div class="ht-section-head ht-reveal">
+      <span class="ht-section-eyebrow">Témoignages</span>
+      <h2 class="ht-section-title">Ils ont transformé <span class="grad">leur quotidien</span></h2>
+      <p class="ht-section-sub">Plus de 2 500 utilisateurs nous font confiance pour atteindre leurs objectifs chaque jour.</p>
+    </div>
+    <div class="ht-reviews-track ht-reveal">
+      <div class="ht-review">
+        <div class="ht-review-stars"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+        <p class="ht-review-text">"Incroyable. En 3 semaines, j'ai établi une routine matinale que je n'avais jamais tenue plus de 3 jours. Le design est magnifique et les statistiques sont motivantes."</p>
+        <div class="ht-review-author"><div class="ht-review-avatar">SL</div><div><div class="ht-review-name">Oumayma Dahiri</div><div class="ht-review-role">Entrepreneure · Rabat</div></div></div>
+      </div>
+      <div class="ht-review">
+        <div class="ht-review-stars"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+        <p class="ht-review-text">"J'ai testé des dizaines d'applications. Aucune ne vaut ce tracker. Le fait qu'il soit sur Google Sheets le rend accessible partout, et le design est digne d'un vrai SaaS."</p>
+        <div class="ht-review-author"><div class="ht-review-avatar">MD</div><div><div class="ht-review-name">Najlae Berr</div><div class="ht-review-role">Développeur · Casa</div></div></div>
+      </div>
+      <div class="ht-review">
+        <div class="ht-review-stars"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+        <p class="ht-review-text">"Mon streak actuel est de 63 jours. Je n'aurais jamais cru pouvoir tenir aussi longtemps. Les bonus (thème sombre, version imprimable) sont la cerise sur le gâteau."</p>
+        <div class="ht-review-author"><div class="ht-review-avatar">CB</div><div><div class="ht-review-name">Ayoub Kaouch</div><div class="ht-review-role">Étudiante · Tanger</div></div></div>
+      </div>
+      <div class="ht-review">
+        <div class="ht-review-stars"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+        <p class="ht-review-text">"Parfait pour le suivi sportif et financier. Les graphiques automatiques me permettent de voir mes progrès en un clin d'œil. Un investissement qui change vraiment la vie."</p>
+        <div class="ht-review-author"><div class="ht-review-avatar">TR</div><div><div class="ht-review-name">Thomas Richard</div><div class="ht-review-role">Coach sportif · Marseille</div></div></div>
+      </div>
+      <div class="ht-review">
+        <div class="ht-review-stars"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+        <p class="ht-review-text">"En tant que freelance, j'avais besoin d'un outil simple mais complet. C'est exactement ça. Je l'utilise tous les jours depuis 4 mois et je ne pourrais plus m'en passer."</p>
+        <div class="ht-review-author"><div class="ht-review-avatar">EM</div><div><div class="ht-review-name">Oussama Oumoulide</div><div class="ht-review-role">Graphiste freelance · Agadir</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     PRICING
+============================================ -->
+<section class="ht-section" id="pricing">
+  <div class="ht-container">
+    <div class="ht-section-head ht-reveal">
+      <span class="ht-section-eyebrow">Tarif unique</span>
+      <h2 class="ht-section-title">Un investissement. <span class="grad">Des résultats à vie.</span></h2>
+      <p class="ht-section-sub">Pas d'abonnement. Pas de frais cachés. Payez une fois, utilisez pour toujours.</p>
+    </div>
+    <div class="ht-pricing-wrap ht-reveal">
+      <div class="ht-pricing">
+        <div class="ht-pricing-badge">🔥 Offre de lancement</div>
+        <h3>Habit Tracker Premium</h3>
+        <p class="ht-pricing-sub">L'outil ultime pour transformer vos habitudes</p>
+        <div class="ht-pricing-price">
+          <span class="old">190MAD</span>
+          <span class="new">69</span>
+          <span class="cur">MAD</span>
+        </div>
+        <div class="ht-pricing-onetime">Paiement unique · Accès à vie</div>
+        <ul class="ht-pricing-features">
+          <li><span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Accès à vie — pas d'abonnement</li>
+          <li><span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Téléchargement instantané</li>
+          <li><span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Mises à jour gratuites à vie</li>
+          <li><span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Compatible Google Sheets</li>
+          <li><span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>12 modules complets inclus</li>
+          <li><span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>5 bonus exclusifs offerts</li>
+          <li><span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Support client prioritaire</li>
+        </ul>
+        <a href="#order" class="ht-btn ht-btn-primary ht-btn-lg ht-pricing-cta">Obtenir mon Habit Tracker
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </a>
+        <div class="ht-pricing-guarantee">🔒 Paiement 100% sécurisé · Satisfaction garantie</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     FAQ
+============================================ -->
+<section class="ht-section" id="faq">
+  <div class="ht-container">
+    <div class="ht-section-head ht-reveal">
+      <span class="ht-section-eyebrow">Questions fréquentes</span>
+      <h2 class="ht-section-title">Tout ce que vous devez <span class="grad">savoir</span></h2>
+    </div>
+    <div class="ht-faq">
+      <div class="ht-faq-item ht-reveal">
+        <div class="ht-faq-q">Le tracker fonctionne-t-il sur mobile ?<div class="ht-faq-toggle"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div></div>
+        <div class="ht-faq-a"><p>Oui, absolument. Étant basé sur Google Sheets, vous pouvez y accéder depuis n'importe quel smartphone (iOS ou Android) via l'application Google Sheets ou votre navigateur. L'interface est optimisée pour une utilisation mobile fluide.</p></div>
+      </div>
+      <div class="ht-faq-item ht-reveal">
+        <div class="ht-faq-q">Ai-je besoin d'un compte Google ?<div class="ht-faq-toggle"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div></div>
+        <div class="ht-faq-a"><p>Oui, un compte Google (Gmail) gratuit suffit. Vous recevrez un lien pour copier le tracker dans votre propre Google Drive, et vous en serez le propriétaire à 100%.</p></div>
+      </div>
+      <div class="ht-faq-item ht-reveal">
+        <div class="ht-faq-q">Puis-je modifier le tracker ?<div class="ht-faq-toggle"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div></div>
+        <div class="ht-faq-a"><p>Totalement. Une fois copié dans votre Drive, le tracker est entièrement personnalisable : ajoutez vos propres habitudes, changez les couleurs, modifiez les formules. C'est votre outil.</p></div>
+      </div>
+      <div class="ht-faq-item ht-reveal">
+        <div class="ht-faq-q">L'accès est-il vraiment à vie ?<div class="ht-faq-toggle"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div></div>
+        <div class="ht-faq-a"><p>Oui, paiement unique et accès à vie. Pas d'abonnement, pas de frais récurrents. Vous payez une fois et vous gardez le tracker pour toujours, y compris toutes les futures mises à jour.</p></div>
+      </div>
+      <div class="ht-faq-item ht-reveal">
+        <div class="ht-faq-q">Le téléchargement est-il instantané ?<div class="ht-faq-toggle"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div></div>
+        <div class="ht-faq-a"><p>Oui. Après validation de votre commande, vous recevez immédiatement par email le lien d'accès au tracker. Vous pouvez commencer à l'utiliser en moins de 2 minutes.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     ORDER FORM
+============================================ -->
+<section class="ht-section" id="order">
+  <div class="ht-container">
+    <div class="ht-section-head ht-reveal">
+      <span class="ht-section-eyebrow">Commander</span>
+      <h2 class="ht-section-title">Prêt à transformer <span class="grad">votre quotidien ?</span></h2>
+      <p class="ht-section-sub">Remplissez le formulaire ci-dessous. Vous serez redirigé vers WhatsApp pour finaliser votre commande en toute sécurité.</p>
+    </div>
+    <div class="ht-order-wrap ht-reveal">
+      <form class="ht-order" id="htOrderForm" onsubmit="return htSubmitOrder(event)">
+        <div class="ht-order-grid">
+          <div class="ht-field">
+            <label for="htName">Nom complet *</label>
+            <input type="text" id="htName" name="name" required placeholder="Lghali Benani">
+          </div>
+          <div class="ht-field">
+            <label for="htPhone">Téléphone *</label>
+            <input type="tel" id="htPhone" name="phone" required placeholder="+212 623-349812">
+          </div>
+          
+          <div class="ht-field full">
+            <label for="htNotes">Notes (optionnel)</label>
+            <textarea id="htNotes" name="notes" placeholder="Des questions ? Des précisions ?"></textarea>
+          </div>
+        </div>
+        <button type="submit" class="ht-btn ht-btn-primary ht-btn-lg ht-order-submit">
+          Commander maintenant
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </button>
+        <div class="ht-order-secure">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Commande sécurisée via WhatsApp · Réponse en moins de 5 minutes
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     FOOTER
+============================================ -->
+<footer class="ht-footer">
+  <div class="ht-container">
+    <div class="ht-footer-grid">
+      <div class="ht-footer-brand">
+        <a href="#" class="ht-logo">
+          <div class="ht-logo-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          </div>
+          HabitFlow
+        </a>
+        <p>Le tracker d'habitudes premium sur Google Sheets. Construisez la vie que vous méritez, une habitude à la fois.</p>
+      </div>
+      <div class="ht-footer-col">
+        <h5>Produit</h5>
+        <ul>
+          <li><a href="#features">Fonctionnalités</a></li>
+          <li><a href="#dashboard">Dashboard</a></li>
+          <li><a href="#pricing">Tarif</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="ht-footer-col">
+        <h5>Entreprise</h5>
+        <ul>
+          <li><a href="#">À propos</a></li>
+          <li><a href="#">Contact</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Partenaires</a></li>
+        </ul>
+      </div>
+      <div class="ht-footer-col">
+        <h5>Légal</h5>
+        <ul>
+          <li><a href="#">Politique de confidentialité</a></li>
+          <li><a href="#">Conditions d'utilisation</a></li>
+          <li><a href="#">Mentions légales</a></li>
+          <li><a href="#">Cookies</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="ht-footer-bottom">
+      <div>© 2026 HabitFlow. Tous droits réservés.</div>
+      <div>Conçu avec ❤️ pour les ambitieux</div>
+    </div>
+  </div>
+</footer>
+
+<!-- ============================================
+     WHATSAPP FLOATING
+============================================ -->
+<a href="https://wa.me/212603037053?text=Bonjour%2C%20je%20suis%20int%C3%A9ress%C3%A9(e)%20par%20le%20Habit%20Tracker%20Premium" target="_blank" rel="noopener" class="ht-wa-float" aria-label="Contacter sur WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+</div>
+
+<script>
+/* ============================================
+   MOBILE MENU
+============================================ */
+(function(){
+  var toggle = document.getElementById('htToggle');
+  var nav = document.getElementById('htNav');
+  if(toggle && nav){
+    toggle.addEventListener('click', function(){ nav.classList.toggle('open'); });
+    nav.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click', function(){ nav.classList.remove('open'); });
+    });
+  }
+})();
+
+/* ============================================
+   SCROLL REVEAL
+============================================ */
+(function(){
+  var items = document.querySelectorAll('.ht-reveal');
+  if(!('IntersectionObserver' in window)){
+    items.forEach(function(el){ el.classList.add('visible'); });
+    return;
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
+      }
+    });
+  }, {threshold:0.12, rootMargin:'0px 0px -40px 0px'});
+  items.forEach(function(el){ io.observe(el); });
+})();
+
+/* ============================================
+   MOUSE GLOW
+============================================ */
+(function(){
+  var glow = document.getElementById('htMouseGlow');
+  if(!glow) return;
+  var mx=0,my=0,cx=0,cy=0,raf;
+  window.addEventListener('mousemove', function(e){
+    mx = e.clientX; my = e.clientY;
+    if(!raf){
+      raf = requestAnimationFrame(function tick(){
+        cx += (mx-cx)*0.15; cy += (my-cy)*0.15;
+        glow.style.left = cx+'px'; glow.style.top = cy+'px';
+        if(Math.abs(mx-cx)>0.5 || Math.abs(my-cy)>0.5){ raf = requestAnimationFrame(tick); }
+        else { raf = null; }
+      });
+    }
+  });
+})();
+
+/* ============================================
+   FAQ ACCORDION
+============================================ */
+(function(){
+  document.querySelectorAll('.ht-faq-item').forEach(function(item){
+    var q = item.querySelector('.ht-faq-q');
+    if(!q) return;
+    q.addEventListener('click', function(){
+      var isOpen = item.classList.contains('open');
+      document.querySelectorAll('.ht-faq-item.open').forEach(function(o){ o.classList.remove('open'); });
+      if(!isOpen) item.classList.add('open');
+    });
+  });
+})();
+
+/* ============================================
+   COUNTER ANIMATION
+============================================ */
+(function(){
+  var counters = document.querySelectorAll('[data-count]');
+  if(!counters.length) return;
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        var el = e.target;
+        var target = parseInt(el.getAttribute('data-count'),10);
+        var dur = 1500, start = performance.now();
+        function step(t){
+          var p = Math.min((t-start)/dur,1);
+          var eased = 1 - Math.pow(1-p,3);
+          el.textContent = Math.floor(eased*target);
+          if(p<1) requestAnimationFrame(step);
+          else el.textContent = target;
+        }
+        requestAnimationFrame(step);
+        io.unobserve(el);
+      }
+    });
+  }, {threshold:0.5});
+  counters.forEach(function(c){ io.observe(c); });
+})();
+
+/* ============================================
+   ORDER FORM → WHATSAPP
+============================================ */
+function htSubmitOrder(e){
+  e.preventDefault();
+  
+  // رقم الواتساب الخاص بك
+  var waNumber = '212603037053';
+  
+  var name = document.getElementById('htName').value.trim();
+  var phone = document.getElementById('htPhone').value.trim();
+  var notes = document.getElementById('htNotes').value.trim();
+  
+  var msg = '*NOUVELLE COMMANDE — Habit Tracker Premium*\n\n';
+  msg += '*Nom :* ' + name + '\n';
+  msg += '*Téléphone :* ' + phone + '\n';
+  
+  if(notes) msg += '*Notes :* ' + notes + '\n';
+  
+  msg += '\nJe souhaite commander le Habit Tracker Premium.';
+  
+  var url = 'https://wa.me/' + waNumber + '?text=' + encodeURIComponent(msg);
+  window.open(url, '_blank');
+  return false;
+}
+
+/* ============================================
+   SMOOTH SCROLL for anchor links
+============================================ */
+document.querySelectorAll('.ht-wrap a[href^="#"]').forEach(function(a){
+  a.addEventListener('click', function(e){
+    var href = a.getAttribute('href');
+    if(href.length > 1){
+      var target = document.querySelector(href);
+      if(target){
+        e.preventDefault();
+        var top = target.getBoundingClientRect().top + window.pageYOffset - 80;
+        window.scrollTo({top:top, behavior:'smooth'});
+      }
+    }
+  });
+});
+</script>
+
+</body>
+</html>
